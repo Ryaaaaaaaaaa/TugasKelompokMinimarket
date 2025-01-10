@@ -82,4 +82,21 @@ class BranchController extends Controller
         $branch->delete();
         return redirect()->route('branches.index')->with('success','Branch deleted successfully!');
     }
+
+    public function select()
+    {
+        $branches = Branch::all();
+
+        return view('branches.select', compact('branches'));
+    }
+
+    public function storeSelection($id, Request $request)
+    {
+        $branch = Branch::find($id);
+        if (!$branch) {
+            return redirect()->route('branches.select')->with('error', 'Cabang tidak ditemukan.');
+        }
+        $request->session()->put('selected_branch_id', $branch->id);
+        return redirect()->route('dashboard')->with('success', 'Cabang berhasil dipilih!');
+    }
 }

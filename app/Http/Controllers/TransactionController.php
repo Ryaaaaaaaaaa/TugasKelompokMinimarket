@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Transaction;
 use App\Http\Requests\StoreTransactionRequest;
 use App\Http\Requests\UpdateTransactionRequest;
+use App\Models\Branch;
 use App\Models\DetailTransaction;
 use App\Models\Product;
 use App\Models\User;
@@ -19,9 +20,19 @@ class TransactionController extends Controller
      */
     public function index(Request $request)
     {
-        $user = $request->user();
+        /** @var \App\Models\User */
+        $user = Auth::user();
+        $branchId = '';
 
-        $transactions = Transaction::with(['user'])->where('branch_id', $user->branch_id)->get();
+        if ($user->hasRole('owner')) {
+            $selectedBranch = Branch::find(session('selected_branch_id'));
+            $branchId = $selectedBranch->id ?? 'Cabang Tidak Ditemukan';
+        } else {
+            $branchId = $user->branch->id ?? 'Cabang Tidak Ditemukan';
+        }
+        $branchId = $branchId;
+
+        $transactions = Transaction::with(['user'])->where('branch_id', $branchId)->get();
         return view('transactions.index',['user' => $request->user(),'transactions'=>$transactions]);
     }
 
@@ -42,6 +53,15 @@ class TransactionController extends Controller
     {
         /** @var \App\Models\User */
         $user = Auth::user();
+        $branchId = '';
+
+        if ($user->hasRole('owner')) {
+            $selectedBranch = Branch::find(session('selected_branch_id'));
+            $branchId = $selectedBranch->id ?? 'Cabang Tidak Ditemukan';
+        } else {
+            $branchId = $user->branch->id ?? 'Cabang Tidak Ditemukan';
+        }
+        $branchId = $branchId;
         $request->validate([
             'total_price' => 'required|numeric|min:0',
             'cart' => 'required|array',
@@ -52,7 +72,7 @@ class TransactionController extends Controller
 
         $transaction = Transaction::create([
             'user_id' => $user->id,
-            'branch_id' => $user->branch_id,
+            'branch_id' => $branchId,
             'total_price' => $request->total_price,
             'date' => $request->date,
         ]);
@@ -119,9 +139,18 @@ class TransactionController extends Controller
             $transaction->transactionDetails()->delete();
             /** @var \App\Models\User */
             $user = Auth::user();
+            $branchId = '';
+
+            if ($user->hasRole('owner')) {
+                $selectedBranch = Branch::find(session('selected_branch_id'));
+                $branchId = $selectedBranch->id ?? 'Cabang Tidak Ditemukan';
+            } else {
+                $branchId = $user->branch->id ?? 'Cabang Tidak Ditemukan';
+            }
+            $branchId = $branchId;
             $transaction->update([
                 'user_id' => $user->id,
-                'branch_id' => $user->branch_id,
+                'branch_id' => $branchId,
                 'total_price' => $validated['total_price'],
                 'date' => $validated['date'],
             ]);

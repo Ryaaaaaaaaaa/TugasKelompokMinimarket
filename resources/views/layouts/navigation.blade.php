@@ -9,6 +9,23 @@
                         <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
                     </a>
                 </div>
+                @php
+                use Illuminate\Support\Facades\Auth;
+                use App\Models\Branch;
+
+                $user = Auth::user();
+                $branchName = '';
+                $roleName = $user->roles->pluck('name')->map(fn($role) => ucwords($role))->join(', ');
+
+                if ($user->hasRole('owner')) {
+                    $selectedBranch = Branch::find(session('selected_branch_id'));
+                    $branchName = $selectedBranch->name ?? 'Cabang Tidak Ditemukan';
+                } elseif ($user->hasRole('admin')) {
+                    $branchName = 'Admin - Tidak Perlu Cabang';
+                } else {
+                    $branchName = $user->branch->name ?? 'Cabang Tidak Ditemukan';
+                }
+            @endphp
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
@@ -24,6 +41,7 @@
                     <x-nav-link :href="route('transactions.index')" :active="request()->routeIs('transactions.*') ? 'active' : ''">
                         {{ __('Transactions') }}
                     </x-nav-link>
+                    <p>Cabang : {{ $branchName }}</p>
                 </div>
             </div>
 

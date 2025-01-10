@@ -11,14 +11,25 @@ use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
+
+
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
-        $user = $request->user();
+        /** @var \App\Models\User */
+        $user = Auth::user();
+        $branchId = '';
 
-        $products = Product::with(['branches'])->where('branch_id', $user->branch_id)->get();
+        if ($user->hasRole('owner')) {
+            $selectedBranch = Branch::find(session('selected_branch_id'));
+            $branchId = $selectedBranch->id ?? 'Cabang Tidak Ditemukan';
+        } else {
+            $branchId = $user->branch->id ?? 'Cabang Tidak Ditemukan';
+        }
+        $branchId = $branchId;
+        $products = product::with(['branches'])->where('branch_id', $branchId)->get();
         return view('products.index',['user' => $request->user(),'products'=>$products]);
     }
 
@@ -36,12 +47,23 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
+        /** @var \App\Models\User */
+        $user = Auth::user();
+        $branchId = '';
+
+        if ($user->hasRole('owner')) {
+            $selectedBranch = Branch::find(session('selected_branch_id'));
+            $branchId = $selectedBranch->id ?? 'Cabang Tidak Ditemukan';
+        } else {
+            $branchId = $user->branch->id ?? 'Cabang Tidak Ditemukan';
+        }
+        $branchId = $branchId;
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'price' => 'required|integer|',
             'stock' => 'required|integer|',
-            'branch_id' => 'required|integer|',
         ]);
+        $validated['branch_id'] = $branchId;
 
         Product::create($validated);
 
@@ -69,12 +91,23 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
+        /** @var \App\Models\User */
+        $user = Auth::user();
+        $branchId = '';
+
+        if ($user->hasRole('owner')) {
+            $selectedBranch = Branch::find(session('selected_branch_id'));
+            $branchId = $selectedBranch->id ?? 'Cabang Tidak Ditemukan';
+        } else {
+            $branchId = $user->branch->id ?? 'Cabang Tidak Ditemukan';
+        }
+        $branchId = $branchId;
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'price' => 'required|integer|',
             'stock' => 'required|integer|',
-            'branch_id' => 'required|integer|',
         ]);
+        $validated['branch_id'] = $branchId;
 
         $product->update($validated);
 

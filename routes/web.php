@@ -1,18 +1,22 @@
 <?php
 
 use App\Http\Controllers\BranchController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TransactionController;
+use App\Http\Middleware\OwnerMiddleware;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::middleware(['auth:web'])->group(function (){
+    Route::middleware([OwnerMiddleware::class])->group(function () {
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    });
+});
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -27,6 +31,9 @@ Route::middleware(['auth',])->group(function () {
     Route::get('/branches/{branch}/edit', [BranchController::class, 'edit'])->name('branches.edit');
     Route::patch('/branches/{branch}', [BranchController::class, 'update'])->name('branches.update');
     Route::delete('/branches/{branch}', [BranchController::class, 'destroy'])->name('branches.destroy');
+
+    Route::get('/branches/select', [BranchController::class, 'select'])->name('branches.select');
+    Route::post('/branches/select/{id}', [BranchController::class, 'storeSelection'])->name('branches.select.store');
 });
 
 Route::middleware(['auth',])->group(function () {
