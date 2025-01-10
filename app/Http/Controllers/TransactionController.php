@@ -5,15 +5,19 @@ namespace App\Http\Controllers;
 use App\Models\Transaction;
 use App\Http\Requests\StoreTransactionRequest;
 use App\Http\Requests\UpdateTransactionRequest;
+use Illuminate\Http\Request;
 
 class TransactionController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $user = $request->user();
+
+        $transactions = Transaction::with(['user'])->where('branch_id', $user->branch_id)->get();
+        return view('transaction.index',['user' => $request->user(),'products'=>$transactions]);
     }
 
     /**

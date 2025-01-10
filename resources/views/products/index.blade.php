@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Products') }}
+            {{ __('Products Management') }}
         </h2>
     </x-slot>
 
@@ -10,71 +10,74 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
                     <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-lg font-semibold">Product List</h3>
+                        <h3 class="text-lg font-semibold">List of Products</h3>
                         <a href="{{ route('products.create') }}"
                             class="px-4 py-2 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600">
-                            Add New Product
+                            Tambah
                         </a>
                     </div>
 
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-100">
+                    <table class="min-w-full border-collapse border border-gray-200">
+                        <thead>
                             <tr>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Name
-                                </th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Price
-                                </th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Stock
-                                </th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Branch
-                                </th>
-                                <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Actions
-                                </th>
+                                <th class="border border-gray-200 px-4 py-2 text-left">No</th>
+                                <th class="border border-gray-200 px-4 py-2 text-left">Name</th>
+                                <th class="border border-gray-200 px-4 py-2 text-left">Price</th>
+                                <th class="border border-gray-200 px-4 py-2 text-left">Stock</th>
+                                <th class="border border-gray-200 px-4 py-2 text-center">Action</th>
                             </tr>
                         </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                            @forelse($products as $product)
+                        <tbody>
+                            @forelse ($products as $product)
                                 <tr>
-                                    <td class="px-6 py-4 whitespace-nowrap">{{ $product->name }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">{{ number_format($product->price, 2) }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">{{ $product->stock }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">{{ $product->branch->name ?? '-' }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-center">
-                                        <a href="{{ route('products.edit', $product->id) }}"
-                                            class="px-3 py-1 bg-yellow-500 text-white rounded-lg shadow hover:bg-yellow-600">
-                                            Edit
-                                        </a>
-                                        <form action="{{ route('products.destroy', $product->id) }}" method="POST" class="inline-block">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit"
-                                                    onclick="return confirm('Are you sure you want to delete this product?')"
-                                                    class="px-3 py-1 bg-red-500 text-white rounded-lg shadow hover:bg-red-600">
-                                                Delete
-                                            </button>
-                                        </form>
+                                    <td class="border border-gray-200 px-4 py-2">{{ $loop->iteration }}</td>
+                                    <td class="border border-gray-200 px-4 py-2">{{ $product->name }}</td>
+                                    <td class="border border-gray-200 px-4 py-2">Rp. {{ number_format($product->price, 0, ',', '.') }}</td>
+                                    <td class="border border-gray-200 px-4 py-2">{{ $product->stock }}</td>
+                                    <td class="border border-gray-200 px-4 py-2 text-center">
+                                        <div class="flex justify-center gap-2">
+                                            <a href="{{ route('products.edit', $product->id) }}"
+                                                class="px-3 py-1 text-sm font-medium text-white bg-green-500 rounded-lg shadow hover:bg-green-600">
+                                                Edit
+                                            </a>
+                                            <form action="{{ route('products.destroy', $product->id) }}" method="POST" class="delete-form">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit"
+                                                        class="px-3 py-1 text-sm font-medium text-white bg-red-500 rounded-lg shadow hover:bg-red-600">
+                                                    Delete
+                                                </button>
+                                            </form>
+                                        </div>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="px-6 py-4 text-center text-gray-500">
+                                    <td colspan="4" class="border border-gray-200 px-4 py-2 text-center">
                                         No products found.
                                     </td>
                                 </tr>
                             @endforelse
                         </tbody>
                     </table>
-
-                    <div class="mt-4">
-                        {{ $products->links() }}
-                    </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const deleteForms = document.querySelectorAll('.delete-form');
+
+            deleteForms.forEach(form => {
+                form.addEventListener('submit', function (event) {
+                    event.preventDefault();
+                    const confirmation = confirm('Apa Kamu Yakin delete product ini?');
+                    if (confirmation) {
+                        form.submit();
+                    }
+                });
+            });
+        });
+    </script>
 </x-app-layout>
