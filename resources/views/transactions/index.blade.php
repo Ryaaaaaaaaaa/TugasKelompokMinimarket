@@ -10,7 +10,7 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
                     <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-lg font-semibold">List of Branches</h3>
+                        <h3 class="text-lg font-semibold">List of Transactions</h3>
                         <a href="{{ route('transactions.create') }}"
                             class="px-4 py-2 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600">
                             Tambah
@@ -28,18 +28,23 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse ($branches as $branch)
+                            @forelse ($transactions as $transaction)
                                 <tr>
                                     <td class="border border-gray-200 px-4 py-2">{{ $loop->iteration }}</td>
-                                    <td class="border border-gray-200 px-4 py-2">{{ $branch->name }}</td>
-                                    <td class="border border-gray-200 px-4 py-2">{{ $branch->location }}</td>
+                                    <td class="border border-gray-200 px-4 py-2">{{ $transaction->user->name }}</td>
+                                    <td class="border border-gray-200 px-4 py-2">{{ $transaction->total_price }}</td>
+                                    <td class="border border-gray-200 px-4 py-2">{{ $transaction->date }}</td>
                                     <td class="border border-gray-200 px-4 py-2 text-center">
                                         <div class="flex justify-center gap-2">
-                                            <a href="{{ route('branches.edit', $branch->id) }}"
+                                            <a href="{{ route('transactions.detail', $transaction->id) }}"
+                                                class="px-3 py-1 text-sm font-medium text-white bg-orange-400 rounded-lg shadow hover:bg-green-600">
+                                                Detail
+                                            </a>
+                                            <a href="{{ route('transactions.edit', $transaction->id) }}"
                                                 class="px-3 py-1 text-sm font-medium text-white bg-green-500 rounded-lg shadow hover:bg-green-600">
                                                 Edit
                                             </a>
-                                            <form action="{{ route('branches.destroy', $branch->id) }}" method="POST" class="delete-form">
+                                            <form action="{{ route('transactions.destroy', $transaction->id) }}" method="POST" class="delete-form">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit"
@@ -53,7 +58,7 @@
                             @empty
                                 <tr>
                                     <td colspan="4" class="border border-gray-200 px-4 py-2 text-center">
-                                        No branches found.
+                                        No transaction found.
                                     </td>
                                 </tr>
                             @endforelse
@@ -71,7 +76,7 @@
             deleteForms.forEach(form => {
                 form.addEventListener('submit', function (event) {
                     event.preventDefault();
-                    const confirmation = confirm('Apa Kamu Yakin delete branch ini?');
+                    const confirmation = confirm('Apa Kamu Yakin delete transaction ini?');
                     if (confirmation) {
                         form.submit();
                     }
