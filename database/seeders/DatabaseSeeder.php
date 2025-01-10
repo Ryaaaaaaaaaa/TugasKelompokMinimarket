@@ -22,7 +22,6 @@ class DatabaseSeeder extends Seeder
         Role::create(['name' => 'supervisor']);
         Role::create(['name' => 'cashier']);
         Role::create(['name' => 'stocker']);
-        Role::create(['name' => 'admin']);
 
         $branch = Branch::create([
             'name' => 'Cabang Pusat',
