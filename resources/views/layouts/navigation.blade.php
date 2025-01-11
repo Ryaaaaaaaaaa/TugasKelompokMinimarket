@@ -15,9 +15,22 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('stores.index')" :active="request()->routeIs('stores.index')">
-                        {{ __('Dashboard') }}
+                    @hasrole('owner')
+                    <x-nav-link :href="route('branches.index')" :active="request()->routeIs('branches.*') ? 'active' : ''">
+                        {{ __('Branches') }}
                     </x-nav-link>
+                    @endhasrole
+                    @hasrole
+                    <x-nav-link :href="route('products.index')" :active="request()->routeIs('products.*') ? 'active' : ''">
+                        {{ __('Products') }}
+                    </x-nav-link>
+                    @endhasrole
+                    @hasrole('cashier')
+                    <x-nav-link :href="route('transactions.index')" :active="request()->routeIs('transactions.*') ? 'active' : ''">
+                        {{ __('Transactions') }}
+                    </x-nav-link>
+                    @endhasrole
+                    <p>Cabang : {{ $branchName }}</p>
                 </div>
             </div>
 
