@@ -33,7 +33,7 @@ Route::middleware(['auth',])->group(function () {
     Route::delete('/branches/{branch}', [BranchController::class, 'destroy'])->name('branches.destroy');
 });
 
-Route::middleware(['auth','role:owner'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     Route::get('/branches/select', [BranchController::class, 'select'])->name('branches.select');
     Route::post('/branches/select/{id}', [BranchController::class, 'storeSelection'])->name('branches.select.store');
 });
