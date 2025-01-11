@@ -80,8 +80,6 @@
                         <span class="text-sm text-gray-500">10 menit lalu</span>
                     </li>
                     <li class="flex justify-between items-center py-2 border-b">
-                        <p class="text-gray-600">Manajer Toko Surabaya mencetak laporan</p>
-                        <span class="text-sm text-gray-500">1 jam lalu</span>
                     </li>
                 </ul>
             </div>
