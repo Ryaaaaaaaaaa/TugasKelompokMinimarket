@@ -12,6 +12,37 @@ class ProductSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        DB::table('branches')->insert([
+            [
+                'name' => 'Main Branch',
+                'location' => 'Jakarta, Indonesia',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'West Branch',
+                'location' => 'Bandung, Indonesia',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'East Branch',
+                'location' => 'Surabaya, Indonesia',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'North Branch',
+                'location' => 'Medan, Indonesia',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'South Branch',
+                'location' => 'Bali, Indonesia',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+        ]);
     }
 }
