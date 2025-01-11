@@ -15,14 +15,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
         Role::create(['name' => 'owner']);
         Role::create(['name' => 'manager']);
         Role::create(['name' => 'supervisor']);
         Role::create(['name' => 'cashier']);
         Role::create(['name' => 'stocker']);
-
+        Role::create(['name' => 'admin']);
         $branch = Branch::create([
             'name' => 'Cabang Pusat',
             'location' => 'Cianjur'
